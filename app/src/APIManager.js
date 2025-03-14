@@ -8,14 +8,19 @@ export async function getCityWeather(city){
     const response = await fetch(`http://localhost:3000/api/city?city=${city}`);
     if (!response.ok)
         throw new Error(response.statusText);
-    const data = await response.json();
-    return data.temp
+    return await response.json();
 }
 
 export async function getLocationsList(){
     const response = await fetch("http://localhost:3000/api/places");
     if (!response.ok)
         throw new Error(response.statusText);
-    const data = await response.json();
-    return data;
+    return await response.json();
+}
+
+export async function getMostViewedPlaces(){
+    const response = await fetch("http://localhost:3000/api/most_viewed_places");
+    if (!response.ok)
+        throw new Error(response.statusText);
+    return await response.json();
 }
