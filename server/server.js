@@ -1,7 +1,8 @@
-const express = require ('express');
+const express = require('express');
 const cors = require('cors');
 const redis = require('ioredis');
 const requestIp = require('request-ip');
+const dateFns = require('date-fns');
 const app = express();
 const redisClient = new redis();
 
@@ -57,6 +58,28 @@ app.get('/api/city', async (req, res) => {
         weatherCondition: weatherOptions[data.forecastTimestamps[0].conditionCode],
     });
 })
+
+app.get('/api/city/five_day_forecast', async (req, res) => {
+    const city = req.query.city;
+
+    const data = await fetchFromWeatherAPI(`https://api.meteo.lt/v1/places/${city}/forecasts/long-term`, `${city}CityCache`, 3600);
+    const requestDate = new Date(Date.now());
+    const returnData = [];
+    for (let i = 1; i<=5; i++){
+        const futureDate = dateFns.addDays(requestDate, i);
+        const index = data.forecastTimestamps.findIndex((item)=>new Date(item.forecastTimeUtc)>=futureDate);
+        returnData.push({
+            timestamp: data.forecastTimestamps[index].forecastTimeUtc,
+            temperature: data.forecastTimestamps[index].airTemperature,
+            windSpeed: data.forecastTimestamps[index].windSpeed,
+            humidity: data.forecastTimestamps[index].relativeHumidity,
+            precipitation: data.forecastTimestamps[index].totalPrecipitation,
+            weatherCondition: weatherOptions[data.forecastTimestamps[index].conditionCode],
+        })
+    }
+    res.status(200).json(returnData);
+})
+
 app.get('/api/places', async (req, res) => {
     const data = await fetchFromWeatherAPI("https://api.meteo.lt/v1/places", "placesCache", 86400);
     res.status(200).json(data);

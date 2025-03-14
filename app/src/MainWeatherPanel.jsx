@@ -1,9 +1,13 @@
-import {getCityWeather, getLocationsList, getMostViewedPlaces} from './APIManager.js'
+import {getCityWeather, getFiveDayCityWeather, getLocationsList, getMostViewedPlaces} from './APIManager.js'
 import {useEffect, useRef, useState} from "react";
-import {Autocomplete, MenuItem, NativeSelect, Select, TextField} from "@mui/material";
+import {Autocomplete, MenuItem, NativeSelect, Select, Stack, TextField} from "@mui/material";
+import "./MainWeatherPanel.scss";
+import FiveDayForecast from "./FiveDayForecast.jsx";
+import MostViewedLocations from "./MostViewedLocations.jsx";
 function MainWeatherPanel() {
     let [city, setCity] = useState(null);
     let citySelection = useRef(null);
+
     const [cityOptions, setCityOptions] = useState([]);
 
     const [temp, setTemp] = useState(null);
@@ -13,19 +17,35 @@ function MainWeatherPanel() {
     const [weatherCond, setWeatherCond] = useState(null);
 
     const [mostViewedPlaces, setMostViewedPlaces] = useState([]);
-    async function handleSelection(event, newValue) {
-        if (!newValue) return;
+    const [fiveDayForecast, setFiveDayForecast] = useState([]);
+    function handleSelection(_, newValue) {
+        if (newValue.value === citySelection.current) return;
+        console.log(newValue);
+
         setCity(newValue.label);
         citySelection.current = newValue.value;
-        setTemp("...")
         console.log(citySelection.current);
+
+        updateData();
+    }
+    function handleButtonSelection(locationCode) {
+        const location = cityOptions.find(option => option.code === locationCode);
+
+        handleSelection(null, {label: location.name, value: location.code});
+    }
+
+    async function updateData(){
+        setTemp("...");
         const data = await getCityWeather(citySelection.current);
         console.log(data.temperature);
+
         setTemp(data.temperature);
         setWindSpeed(data.windSpeed);
         setHumidity(data.humidity);
         setPrecipitation(data.precipitation);
         setWeatherCond(data.weatherCondition);
+
+        setFiveDayForecast(await getFiveDayCityWeather(citySelection.current));
 
         const mostViewedPlaces = await getMostViewedPlaces();
         setMostViewedPlaces(mostViewedPlaces);
@@ -47,7 +67,7 @@ function MainWeatherPanel() {
                 Humidity: {humidity}%<br/>
                 Precipitation: {precipitation} mm.<br/>
                 Wind speed: {windSpeed} m/s<br/>
-                <Autocomplete variant={"filled"} onChange={handleSelection} options={
+                <Autocomplete variant={"filled"} className={"dropdown"} onChange={handleSelection} options={
                     cityOptions.map((city, index, arr) => {
                         const count = arr.slice(0, index)
                             .filter((item) => item.name === city.name)
@@ -60,16 +80,10 @@ function MainWeatherPanel() {
                         }
                     })
                 }
-                              renderInput={(params) => <TextField {...params} label="Location" />}
+                              renderInput={(params) => <TextField {...params} variant={"standard"} label="Location" />}
                 />
-                Most-searched locations:<br />
-                {
-                    mostViewedPlaces.map((place)=> (
-                        <>
-                            {cityOptions.find((item) => item.code === place).name}<br />
-                        </>
-                    ))
-                }
+                <FiveDayForecast fiveDayForecast={fiveDayForecast} />
+                <MostViewedLocations mostViewedLocations={mostViewedPlaces} locationOptions={cityOptions} setSelectedLocation={(value)=>handleButtonSelection(value)} />
             </div>
         </>
     )

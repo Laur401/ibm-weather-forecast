@@ -11,6 +11,14 @@ export async function getCityWeather(city){
     return await response.json();
 }
 
+export async function getFiveDayCityWeather(city){
+
+    const response = await fetch(`http://localhost:3000/api/city/five_day_forecast?city=${city}`);
+    if (!response.ok)
+        throw new Error(response.statusText);
+    return await response.json();
+}
+
 export async function getLocationsList(){
     const response = await fetch("http://localhost:3000/api/places");
     if (!response.ok)

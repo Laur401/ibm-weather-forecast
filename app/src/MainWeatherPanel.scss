@@ -1,0 +1,42 @@
+$fonts: system-ui, Avenir, Helvetica, Arial, sans-serif;
+@mixin darkTheme(){
+  @include darkThemeText;
+  padding: 2rem;
+  background-color: #1a1a1a;
+}
+
+@mixin lightTheme(){
+  color: #000;
+  font-family: $fonts;
+}
+
+@mixin darkThemeText(){
+  color: rgba(255, 255, 255, 0.87);;
+  font-family: $fonts;
+}
+
+:root {
+  @include darkTheme;
+}
+
+.dropdown {
+  @include darkTheme;
+  [class*="MuiAutocomplete-"]{
+    @include darkThemeText;
+  }
+  [class*="MuiFormLabel-"]{
+    @include darkThemeText;
+  }
+  [class*="MuiFormControl-"]{
+    @include darkThemeText;
+  }
+  [class*="MuiInput-"]:after{
+    @include darkThemeText;
+    border-bottom: #cc00cc 1px solid;
+  }
+  [class*="MuiInput-"]:before{
+    @include darkThemeText;
+    border-bottom: #cc00cc 1px solid;
+  }
+}
+
