@@ -8,6 +8,7 @@ Web app for displaying the weather of a selected location.
 For local deployment:
 
 ```bash
+    cd app
     npm i #install dependencies
     npm run dev
 ```
@@ -15,6 +16,7 @@ Edit the `vars.config.js` file to include the URL of the backend server API.
 
 ### Back-end
 ```bash
+    cd server
     npm i #install dependencies
     node server.js
 ```
@@ -29,11 +31,12 @@ Back-end uses Node.js with an optional Redis cache.
 
 ## Live Demo
 
-
+A live deployed demo of the web app is available [here](https://master.d271k9fcuj72ht.amplifyapp.com/).
 > [!INFO]
-> If options do not load, try disabling secure connection (HTTPS) upgrading. The demo is HTTP-only.
+> If options do not load, try disabling secure connection (HTTPS) upgrading and/or connection protection. The demo is HTTP-only.
 
 ## Credits
 
 [Meteo.lt API](https://api.meteo.lt/)<br />
-[MUI](https://mui.com)
+[MUI](https://mui.com)<br />
+[Redis](https://github.com/redis/node-redis)
