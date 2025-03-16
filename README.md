@@ -20,7 +20,7 @@ Edit the `vars.config.js` file to include the URL of the backend server API.
     npm i #install dependencies
     node server.js
 ```
-> [!INFO]
+> [!IMPORTANT]
 > Make sure to install and run Redis (default port, 6379), otherwise each call will be made to the Weather API directly.
 
 ## Documentation
@@ -32,8 +32,6 @@ Back-end uses Node.js with an optional Redis cache.
 ## Live Demo
 
 A live deployed demo of the web app is available [here](https://master.d271k9fcuj72ht.amplifyapp.com/).
-> [!INFO]
-> If options do not load, try disabling secure connection (HTTPS) upgrading and/or connection protection. The demo is HTTP-only.
 
 ## Credits
 
