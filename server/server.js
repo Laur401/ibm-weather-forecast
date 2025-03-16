@@ -1,15 +1,36 @@
 const express = require('express');
 const cors = require('cors');
-const redis = require('ioredis');
+const redis = require('redis');
 const requestIp = require('request-ip');
 const dateFns = require('date-fns');
 const app = express();
-const redisClient = new redis();
+const redisClient = redis.createClient();
+let isRedisAvailable = true;
+
+const placeViewCounter = {};
+
+async function setup() {
+    await redisClient.connect().catch((err) => {
+        console.error("Redis client unavailable. " + err);
+        isRedisAvailable = false;
+    })
+
+    // Setup for the most popular places counter
+    fetchFromWeatherAPI("https://api.meteo.lt/v1/places", "placesCache", 86400)
+        .then(places => {
+            for (const place of places) {
+                placeViewCounter[place.code] = 0;
+            }
+        });
+}
+setup();
+
+/*redisClient.on('error', err => {
+    console.error("Redis client unavailable." + err)
+})*/
 
 app.use(cors());
 app.use(express.json());
-//redisClient.on('error', (err) => {console.log('Redis Error', err)});
-//redisClient.connect();
 
 const weatherOptions = {
     "clear": "Clear",
@@ -34,22 +55,16 @@ const weatherOptions = {
     "null": "Unknown"
 }
 
-const placeViewCounter = {};
-fetchFromWeatherAPI("https://api.meteo.lt/v1/places", "placesCache", 86400)
-    .then(places => {
-        for (const place of places) {
-            placeViewCounter[place.code] = 0;
-        }
-    });
-
-
+// Weather forecast for a specified location.
 app.get('/api/city', async (req, res) => {
     const city = req.query.city;
 
     const data = await fetchFromWeatherAPI(`https://api.meteo.lt/v1/places/${city}/forecasts/long-term`, `${city}CityCache`, 3600);
     placeViewCounter[city]++;
+
     const requestDate = new Date(Date.now()).toISOString();
     console.log(`${requestIp.getClientIp(req)} fetched data for location ${city} at ${requestDate}`);
+
     res.status(200).json({
         temperature: data.forecastTimestamps[0].airTemperature,
         windSpeed: data.forecastTimestamps[0].windSpeed,
@@ -59,6 +74,7 @@ app.get('/api/city', async (req, res) => {
     });
 })
 
+// Five-day weather forecast for a specified location.
 app.get('/api/city/five_day_forecast', async (req, res) => {
     const city = req.query.city;
 
@@ -84,32 +100,34 @@ app.get('/api/city/five_day_forecast', async (req, res) => {
     res.status(200).json(returnData);
 })
 
+// List of all locations available to retrieve weather data for.
 app.get('/api/places', async (req, res) => {
     const data = await fetchFromWeatherAPI("https://api.meteo.lt/v1/places", "placesCache", 86400);
     res.status(200).json(data);
 })
 
+// List of locations sorted by search count.
 app.get('/api/most_viewed_places', async (req, res) => {
-    const sortedPlaceViewCounter = Object.entries(placeViewCounter).sort(([, a], [, b])=>b-a);
-    const data = [];
-    for (let i = 0; i < 3; i++) {
-        if (sortedPlaceViewCounter[i][1] > 0) {
-            data.push(sortedPlaceViewCounter[i][0]);
-        }
-    }
-    res.status(200).json(data);
+    const sortedPlaceViewCounter = Object.fromEntries(
+        Object.entries(placeViewCounter).sort(([, a], [, b])=>b-a)
+    );
+    res.status(200).json(sortedPlaceViewCounter);
 })
 
 app.listen(3000, () => {
     console.log('App is running on port 3000');
 })
 
+// Fetcher function that gets data from a Redis cache if it exists, and if not fetches the weather data and stores it in the cache.
 async function fetchFromWeatherAPI(url, cacheKey, cacheDuration) {
-    const cachedData = await redisClient.get(cacheKey);
-    if (cachedData)
-        return JSON.parse(cachedData);
+    if (isRedisAvailable) {
+        const cachedData = await redisClient.get(cacheKey);
+        if (cachedData)
+            return JSON.parse(cachedData);
+    }
     let data = await fetch(url);
     data = await data.json();
-    redisClient.set(cacheKey, JSON.stringify(data), "EX", cacheDuration);
+    if (isRedisAvailable)
+        await redisClient.set(cacheKey, JSON.stringify(data), "EX", cacheDuration);
     return data;
 }

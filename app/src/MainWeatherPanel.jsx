@@ -1,8 +1,7 @@
-import {getCityWeather, getFiveDayCityWeather, getLocationsList, getMostViewedPlaces} from './APIManager.js'
-import {useEffect, useRef, useState} from "react";
-import {Autocomplete, Box, Grid2, MenuItem, NativeSelect, Select, Stack, TextField} from "@mui/material";
-import FiveDayForecast from "./FiveDayForecast.jsx";
-import MostViewedLocations from "./MostViewedLocations.jsx";
+import {getCityWeather} from './APIManager.js'
+import {useEffect, useState} from "react";
+import {Box, Grid2, Stack} from "@mui/material";
+
 function MainWeatherPanel({citySelection, cityLabel}) {
     const [temp, setTemp] = useState(null);
     const [windSpeed, setWindSpeed] = useState(null);
@@ -14,7 +13,6 @@ function MainWeatherPanel({citySelection, cityLabel}) {
             if (citySelection.current===null) return;
             setTemp("...");
             const data = await getCityWeather(citySelection.current);
-            console.log(data.temperature);
 
             setTemp(data.temperature);
             setWindSpeed(data.windSpeed);
@@ -22,9 +20,8 @@ function MainWeatherPanel({citySelection, cityLabel}) {
             setPrecipitation(data.precipitation);
             setWeatherCond(data.weatherCondition);
         }
-        console.log(citySelection)
         updateData();
-    }, [citySelection.current]);
+    }, [cityLabel, citySelection]);
 
     return (
         <div>

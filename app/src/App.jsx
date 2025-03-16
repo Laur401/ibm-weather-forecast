@@ -23,7 +23,7 @@ function App() {
         fetchLocations();
     },[])
 
-
+    // Dropdown menu (Autocomplete) selection handler
     function handleSelection(_, newValue) {
         if (newValue === null || newValue.value === locationSelectionValue.current) return;
 
@@ -31,29 +31,23 @@ function App() {
         setLocationSelectionLabel(newValue.label);
         locationSelectionValue.current = newValue.value;
     }
+    // Button (Most viewed location buttons) selection handler
     function handleButtonSelection(locationCode) {
         const location = locationOptions.find(option => option.code === locationCode);
         handleDropdownText(location.name);
         handleSelection(null, {label: location.name, value: location.code});
     }
+    // Dropdown menu (Autocomplete) text handler
     function handleDropdownText(value){
         setAutocompleteInputValue(value);
     }
 
+    // Theme change handler
     function themeChange(){
         const propertyChange = (prop, value) => document.documentElement.style.setProperty(prop, value);
 
         const theme = document.documentElement.style.getPropertyValue("--theme");
-        if (theme==="dark"){
-            propertyChange("--theme", "light");
-            propertyChange("--theme-color", "rgba(0, 0, 0, 0.87)");
-            propertyChange("--theme-background-color", "rgba(229, 229, 229, 1)");
-            propertyChange("--theme-border", "rgba(0, 0, 0, 0.12) 1px solid");
-            propertyChange("--theme-subtext-color", "rgba(0, 0, 0, 0.50)");
-            propertyChange("--theme-panel-background-color", "rgba(255, 255, 255, 0.31)");
-            propertyChange("--theme-divider-border-color", "rgba(0, 0, 0, 0.12)");
-        }
-        else {
+        if (theme==="light"){
             propertyChange("--theme", "dark");
             propertyChange("--theme-color", "rgba(255, 255, 255, 0.87)");
             propertyChange("--theme-background-color", "rgba(26, 26, 26, 1)");
@@ -61,6 +55,15 @@ function App() {
             propertyChange("--theme-subtext-color", "rgba(255, 255, 255, 0.50)");
             propertyChange("--theme-panel-background-color", "rgba(0, 0, 0, 0.19)");
             propertyChange("--theme-divider-border-color", "rgba(255, 255, 255, 0.12)");
+        }
+        else {
+            propertyChange("--theme", "light");
+            propertyChange("--theme-color", "rgba(0, 0, 0, 0.87)");
+            propertyChange("--theme-background-color", "rgba(229, 229, 229, 1)");
+            propertyChange("--theme-border", "rgba(0, 0, 0, 0.12) 1px solid");
+            propertyChange("--theme-subtext-color", "rgba(0, 0, 0, 0.50)");
+            propertyChange("--theme-panel-background-color", "rgba(255, 255, 255, 0.31)");
+            propertyChange("--theme-divider-border-color", "rgba(0, 0, 0, 0.12)");
         }
     }
 
@@ -87,14 +90,14 @@ function App() {
                       {locationSelectionLabel
                           ? <>
                               <MainWeatherPanel citySelection={locationSelectionValue} cityLabel={locationSelectionLabel} />
+                              <Box className={"smallSubText"}>Provided by meteo.lt</Box>
                               <Divider className={"divider"}/>
-                              <FiveDayForecast citySelection={locationSelectionValue} />
+                              <FiveDayForecast citySelection={locationSelectionValue} mutableDependency={locationSelectionLabel} />
                           </>
                           : <>
                               Select a location!
                           </>
                       }
-                      {}
                   </Box>
               </Grid2>
               <Grid2 size={6}>
@@ -119,7 +122,8 @@ function App() {
 
                   />
                   <Box className={"divider"}/>
-                  <MostViewedLocations citySelection={locationSelectionValue} locationOptions={locationOptions} setSelectedLocation={(value)=>handleButtonSelection(value)} />
+                  <MostViewedLocations mutableDependency={locationSelectionLabel} locationOptions={locationOptions}
+                                       setSelectedLocation={(value)=>handleButtonSelection(value)} />
               </Grid2>
           </Grid2>
       </>

@@ -1,9 +1,9 @@
-import {Box, Grid2, Stack} from "@mui/material";
+import {Box, Grid2} from "@mui/material";
 import {useEffect, useState} from "react";
-import {getFiveDayCityWeather, getMostViewedPlaces} from "./APIManager.js";
+import {getFiveDayCityWeather} from "./APIManager.js";
 
 
-function FiveDayForecast({citySelection}) {
+function FiveDayForecast({mutableDependency, citySelection}) {
 
     const [fiveDayForecast, setFiveDayForecast] = useState([]);
     useEffect(() => {
@@ -13,7 +13,7 @@ function FiveDayForecast({citySelection}) {
             setFiveDayForecast(await getFiveDayCityWeather(citySelection.current));
         }
         fetchFiveDayForecast();
-    }, [citySelection.current]);
+    }, [mutableDependency]);
 
     return (
         <div>

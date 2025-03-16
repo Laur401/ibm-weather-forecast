@@ -1,33 +1,25 @@
-function GetWeatherAPI(){
-    fetch("https://api.meteo.lt/v1/places")
-    .then(res => res.json())
-}
+import configVars from "./vars.config.js";
+
+// Functions for fetching from the backend API.
 
 export async function getCityWeather(city){
-
-    const response = await fetch(`http://localhost:3000/api/city?city=${city}`);
-    if (!response.ok)
-        throw new Error(response.statusText);
-    return await response.json();
+    return await getAPIData(`${configVars.serverURL}/city?city=${city}`);
 }
 
 export async function getFiveDayCityWeather(city){
-
-    const response = await fetch(`http://localhost:3000/api/city/five_day_forecast?city=${city}`);
-    if (!response.ok)
-        throw new Error(response.statusText);
-    return await response.json();
+    return await getAPIData(`${configVars.serverURL}/city/five_day_forecast?city=${city}`);
 }
 
 export async function getLocationsList(){
-    const response = await fetch("http://localhost:3000/api/places");
-    if (!response.ok)
-        throw new Error(response.statusText);
-    return await response.json();
+    return await getAPIData(`${configVars.serverURL}/places`);
 }
 
 export async function getMostViewedPlaces(){
-    const response = await fetch("http://localhost:3000/api/most_viewed_places");
+    return await getAPIData(`${configVars.serverURL}/most_viewed_places`);
+}
+
+async function getAPIData(URL){
+    const response = await fetch(URL);
     if (!response.ok)
         throw new Error(response.statusText);
     return await response.json();

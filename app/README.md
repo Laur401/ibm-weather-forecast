@@ -1,12 +1,33 @@
-# React + Vite
+# Weather-o-rama
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Web app for displaying the weather of a selected location.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Front-end
+For local deployment:
 
-## Expanding the ESLint configuration
+```bash
+    npm i #install dependencies
+    npm run dev
+```
+Edit the `vars.config.js` file to include the URL of the backend server API.
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Back-end
+```bash
+    npm i #install dependencies
+    node server.js
+```
+> [!INFO]
+> Make sure to install and run Redis (default port, 6379), otherwise each call will be made to the Weather API directly.
+
+## Documentation
+
+The repository consists of two parts - app folder for the front-end, server folder for the back-end.<br />
+Front-end uses React and MUI. <br />
+Back-end uses Node.js with an optional Redis cache.
+
+## Credits
+
+[Meteo.lt API](https://api.meteo.lt/)<br />
+[MUI](https://mui.com)
