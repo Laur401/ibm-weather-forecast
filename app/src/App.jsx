@@ -3,7 +3,7 @@ import './App.scss'
 import MainWeatherPanel from "./MainWeatherPanel.jsx";
 import FiveDayForecast from "./FiveDayForecast.jsx";
 import MostViewedLocations from "./MostViewedLocations.jsx";
-import {Autocomplete, Box, Divider, Grid, Grid2, IconButton, Link, Stack, TextField} from "@mui/material";
+import {Autocomplete, Box, Divider, Grid2, IconButton, Link, TextField} from "@mui/material";
 import {getLocationsList} from "./APIManager.js";
 import {LightModeTwoTone} from "@mui/icons-material";
 
@@ -12,6 +12,9 @@ function App() {
     const locationSelectionValue = useRef(null);
 
     const [locationOptions, setLocationOptions] = useState([]);
+
+    const [autocompleteInputValue, setAutocompleteInputValue] = useState('');
+    const [autocompleteValue, setAutocompleteValue] = useState(null);
 
     useEffect( () => {
         async function fetchLocations(){
@@ -24,20 +27,24 @@ function App() {
     function handleSelection(_, newValue) {
         if (newValue === null || newValue.value === locationSelectionValue.current) return;
 
+        setAutocompleteValue(newValue);
         setLocationSelectionLabel(newValue.label);
         locationSelectionValue.current = newValue.value;
     }
     function handleButtonSelection(locationCode) {
         const location = locationOptions.find(option => option.code === locationCode);
-
+        handleDropdownText(location.name);
         handleSelection(null, {label: location.name, value: location.code});
+    }
+    function handleDropdownText(value){
+        setAutocompleteInputValue(value);
     }
 
     function themeChange(){
         const propertyChange = (prop, value) => document.documentElement.style.setProperty(prop, value);
 
         const theme = document.documentElement.style.getPropertyValue("--theme");
-        if (theme=="dark"){
+        if (theme==="dark"){
             propertyChange("--theme", "light");
             propertyChange("--theme-color", "rgba(0, 0, 0, 0.87)");
             propertyChange("--theme-background-color", "rgba(229, 229, 229, 1)");
@@ -91,7 +98,7 @@ function App() {
                   </Box>
               </Grid2>
               <Grid2 size={6}>
-                  <Autocomplete variant={"filled"} className={"dropdown"} onChange={handleSelection} options={
+                  <Autocomplete variant={"filled"} className={"dropdown"} options={
                       locationOptions.map((city, index, arr) => {
                           const count = arr.slice(0, index)
                               .filter((item) => item.name === city.name)
@@ -105,6 +112,10 @@ function App() {
                       })
                   }
                                 renderInput={(params) => <TextField {...params} variant={"standard"} label="Location" />}
+                                value={autocompleteValue}
+                                onChange={(event, newValue) => handleSelection(event, newValue)}
+                                inputValue={autocompleteInputValue}
+                                onInputChange={(event, newInputValue) => handleDropdownText(newInputValue)}
 
                   />
                   <Box className={"divider"}/>
