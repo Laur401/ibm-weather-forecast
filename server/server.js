@@ -25,10 +25,6 @@ async function setup() {
 }
 setup();
 
-/*redisClient.on('error', err => {
-    console.error("Redis client unavailable." + err)
-})*/
-
 app.use(cors());
 app.use(express.json());
 
