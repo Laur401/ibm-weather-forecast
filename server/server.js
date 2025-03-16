@@ -63,11 +63,15 @@ app.get('/api/city/five_day_forecast', async (req, res) => {
     const city = req.query.city;
 
     const data = await fetchFromWeatherAPI(`https://api.meteo.lt/v1/places/${city}/forecasts/long-term`, `${city}CityCache`, 3600);
+
     const requestDate = new Date(Date.now());
     const returnData = [];
+
     for (let i = 1; i<=5; i++){
         const futureDate = dateFns.addDays(requestDate, i);
-        const index = data.forecastTimestamps.findIndex((item)=>new Date(item.forecastTimeUtc)>=futureDate);
+        let index = data.forecastTimestamps.findIndex(item => new Date(item.forecastTimeUtc) >= futureDate);
+        while (new Date(data.forecastTimestamps[index].forecastTimeUtc).getDate() !== futureDate.getDate()) //Making sure to always get the correct date
+            index--;
         returnData.push({
             timestamp: data.forecastTimestamps[index].forecastTimeUtc,
             temperature: data.forecastTimestamps[index].airTemperature,

@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {getMostViewedPlaces} from "./APIManager.js";
-import {Grid2} from "@mui/material";
+import {Box, Grid2, Link} from "@mui/material";
 
 function MostViewedLocations({citySelection, locationOptions, setSelectedLocation}) {
     const [mostViewedLocations, setMostViewedLocations] = useState([]);
@@ -10,21 +10,25 @@ function MostViewedLocations({citySelection, locationOptions, setSelectedLocatio
             setMostViewedLocations(await getMostViewedPlaces());
         }
         fetchMostViewedLocations();
-    },[citySelection.current])
+    },[])
 
     return (
         <div>
-            Most-searched locations:<br />
-            <Grid2 container  width={"100%"}>
-                {
-                    mostViewedLocations.map(place => (
-                        <Grid2>
-                            {locationOptions.length > 0 && <button
-                                onClick={() => setSelectedLocation(place)}>{locationOptions.find(item => item.code === place).name}</button>}<br />
-                        </Grid2>
-                    ))
-                }
-            </Grid2>
+            <Box fontSize={"1.2rem"} marginBottom={"0.6rem"}>Most-searched locations:</Box>
+            {mostViewedLocations.length > 0
+            ? <Grid2 container spacing={2} width={"100%"}>
+                    {
+                        mostViewedLocations.map(place => (
+                            <Grid2>
+                                {locationOptions.length > 0 && <Link component={"button"}
+                                                                     onClick={() => setSelectedLocation(place)}>{locationOptions.find(item => item.code === place).name}</Link>}<br />
+                            </Grid2>
+                        ))
+                    }
+                </Grid2>
+            : <>None yet!</>
+            }
+
 
         </div>
     );

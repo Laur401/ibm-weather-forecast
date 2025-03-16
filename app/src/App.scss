@@ -1,0 +1,135 @@
+/*#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}*/
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+$fonts: Ubuntu, system-ui, Arial, sans-serif;
+@mixin darkTheme() {
+  --theme: dark;
+  --theme-color: rgba(255, 255, 255, 0.87);
+  --theme-background-color: rgba(26, 26, 26, 1);
+  --theme-border: rgba(255, 255, 255, 0.12) 1px solid;
+  --theme-subtext-color: rgba(255, 255, 255, 0.50);
+  --theme-panel-background-color: rgba(0, 0, 0, 0.19);
+  --theme-divider-border-color: rgba(255, 255, 255, 0.12);
+}
+
+@mixin lightTheme() {
+  --theme: light;
+  --theme-color: rgba(0, 0, 0, 0.87);
+  --theme-background-color: rgba(229, 229, 229, 1);
+  --theme-border: rgba(0, 0, 0, 0.12) 1px solid;
+  --theme-subtext-color: rgba(0, 0, 0, 0.50);
+  --theme-panel-background-color: rgba(255, 255, 255, 0.31);
+  --theme-divider-border-color: rgba(0, 0, 0, 0.12);
+}
+
+@mixin theme(){
+  @include darkTheme;
+
+  background-color: var(--theme-background-color);
+  @include themeText;
+}
+
+@mixin themeText(){
+  color: var(--theme-color);
+  font-family: $fonts;
+}
+
+:root {
+  @include theme;
+}
+
+$header-height: 1rem;
+html body {
+  padding-top: 5 * $header-height;
+}
+
+.App-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: $header-height 1rem;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--theme-panel-background-color);
+}
+
+.subText {
+  color: var(--theme-subtext-color);
+}
+
+.container {
+  background-color: var(--theme-panel-background-color);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.divider {
+  border-color: var(--theme-divider-border-color);
+  margin: 1rem 0;
+}
+
+.colorModeIcon {
+  color: var(--theme-color);
+}
+
+.dropdown {
+  [class*="MuiAutocomplete-"]{
+    @include themeText;
+  }
+  [class*="MuiFormLabel-"]{
+    @include themeText;
+  }
+  [class*="MuiFormControl-"]{
+    @include themeText;
+  }
+  [class*="MuiInput-"]:after{
+    @include themeText;
+    border-bottom: var(--theme-border);
+  }
+  [class*="MuiInput-"]:before{
+    @include themeText;
+    border-bottom: var(--theme-border);
+  }
+}

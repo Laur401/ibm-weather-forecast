@@ -17,15 +17,15 @@ function FiveDayForecast({citySelection}) {
 
     return (
         <div>
-            Five day forecast:<br />
-            <Grid2 container spacing={2} >
+            <Box style={{fontSize: "1.2rem"}} marginBottom={"0.6rem"}>Five day forecast:</Box>
+            <Grid2 container spacing={"1rem"} justifyContent={"space-evenly"} textAlign={"center"}>
                 {
                     fiveDayForecast.map((item)=>(
                         <Grid2>
-                            {new Date(item.timestamp).toLocaleDateString()}<br />
-                            {item.temperature}<br />
-                            {item.precipitation}<br />
-                            {item.weatherCondition}<br />
+                            <Box style={{fontSize: "1rem"}} marginBottom={"0.6rem"} className={"subText"}>{new Date(item.timestamp).toLocaleDateString()}</Box>
+                            <Box>{item.temperature}°C</Box>
+                            <Box>{item.weatherCondition}</Box>
+                            <Box>{item.precipitation}%</Box>
                         </Grid2>
                     ))
                 }

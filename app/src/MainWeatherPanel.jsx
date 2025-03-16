@@ -1,7 +1,6 @@
 import {getCityWeather, getFiveDayCityWeather, getLocationsList, getMostViewedPlaces} from './APIManager.js'
 import {useEffect, useRef, useState} from "react";
 import {Autocomplete, Box, Grid2, MenuItem, NativeSelect, Select, Stack, TextField} from "@mui/material";
-import "./MainWeatherPanel.scss";
 import FiveDayForecast from "./FiveDayForecast.jsx";
 import MostViewedLocations from "./MostViewedLocations.jsx";
 function MainWeatherPanel({citySelection, cityLabel}) {
@@ -29,21 +28,27 @@ function MainWeatherPanel({citySelection, cityLabel}) {
 
     return (
         <div>
-            <Grid2 container direction="column" alignItems="center" size={"auto"}>
-                <Grid2 marginBottom={3}>
-                    <Box textAlign={"center"} style={{fontSize: 24}}>{cityLabel}</Box>
+            <Stack direction="column" alignItems="center" size={"auto"}>
+                <Box textAlign={"center"} style={{fontSize: "1.5rem"}} marginBottom={3}>{cityLabel}</Box>
+                <Box style={{fontSize: "3rem", fontWeight: "bold"}}>{temp}°C</Box>
+                <Box marginBottom={5}>{weatherCond}</Box>
+                <Grid2 container spacing={"0.5rem"} width={"100%"}>
+                    <Grid2 size={6}>
+                        <Stack direction={"column"} textAlign={"right"} spacing={"0.25rem"} className={"subText"}>
+                            <Box>Humidity:</Box>
+                            <Box>Precipitation:</Box>
+                            <Box whiteSpace={"nowrap"}>Wind speed:</Box>
+                        </Stack>
+                    </Grid2>
+                    <Grid2 size={6}>
+                        <Stack direction={"column"} textAlign={"left"} spacing={"0.25rem"}>
+                            <Box>{humidity}%</Box>
+                            <Box>{precipitation} mm</Box>
+                            <Box>{windSpeed} m/s</Box>
+                        </Stack>
+                    </Grid2>
                 </Grid2>
-                <Grid2 textAlign={"center"} marginBottom={5}>
-                    <Box style={{fontSize: 36, fontWeight: "bold"}}>{temp}°C</Box>
-                    {weatherCond}<br/>
-                </Grid2>
-
-                <Grid2>
-                    Humidity: {humidity}%<br/>
-                    Precipitation: {precipitation} mm.<br/>
-                    Wind speed: {windSpeed} m/s<br/>
-                </Grid2>
-            </Grid2>
+            </Stack>
         </div>
     )
 }
