@@ -21,7 +21,7 @@ function FiveDayForecast({mutableDependency, citySelection}) {
             <Grid2 container spacing={"1rem"} justifyContent={"space-evenly"} textAlign={"center"}>
                 {
                     fiveDayForecast.map((item)=>(
-                        <Grid2>
+                        <Grid2 key={item.timestamp}>
                             <Box style={{fontSize: "1rem"}} marginBottom={"0.6rem"} className={"subText"}>{new Date(item.timestamp).toLocaleDateString()}</Box>
                             <Box>{item.temperature}°C</Box>
                             <Box>{item.weatherCondition}</Box>

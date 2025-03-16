@@ -23,9 +23,15 @@ Edit the `vars.config.js` file to include the URL of the backend server API.
 
 ## Documentation
 
-The repository consists of two parts - app folder for the front-end, server folder for the back-end.<br />
+The repository consists of two parts - `app` folder for the front-end, `server` folder for the back-end.<br />
 Front-end uses React and MUI. <br />
 Back-end uses Node.js with an optional Redis cache.
+
+## Live Demo
+
+
+> [!INFO]
+> If options do not load, try disabling secure connection (HTTPS) upgrading. The demo is HTTP-only.
 
 ## Credits
 

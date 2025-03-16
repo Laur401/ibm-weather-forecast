@@ -26,7 +26,7 @@ function MostViewedLocations({mutableDependency, locationOptions, setSelectedLoc
             ? <Grid2 container spacing={2} width={"100%"}>
                     {
                         mostViewedLocations.map(place => (
-                            <Grid2>
+                            <Grid2 key={place}>
                                 {locationOptions.length > 0 &&
                                     <Link component={"button"} onClick={() => setSelectedLocation(place)}>
                                         {locationOptions.find(item => item.code === place).name}
